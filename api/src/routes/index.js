@@ -11,14 +11,14 @@ router.post('/login', loginUser);
 router.get('/auth/google', (req, res) => {
     const authUrl = getAuthUrl();
     res.redirect(authUrl);
-  });
-  router.get('/auth/google/callback', async (req, res) => {
+});
+router.get('/auth/google/callback', async (req, res) => {
     const code = req.query.code;
     const tokens = await getAccessToken(code);
     // Save tokens in session or database for user
     res.json(tokens);
-  });
-  router.post('/upload', authenticate, upload.single('file'), uploadFile);
-  router.get('/files', authenticate, getFiles);
+});
+router.post('/upload', authenticate, upload.single('file'), uploadFile);
+router.get('/files', authenticate, getFiles);
 
 module.exports = router;
