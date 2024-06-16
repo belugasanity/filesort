@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getIndex, createUser, loginUser } = require('../controllers');
+const { getIndex, createUser, loginUser, getFiles, uploadFile } = require('../controllers');
 const upload = require('../google/upload');
 
 // Define a simple GET route

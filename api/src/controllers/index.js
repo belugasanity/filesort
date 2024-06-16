@@ -43,9 +43,51 @@ const createUser = async (req, res) => {
       res.status(500).json({ error: 'An error occurred' });
     }
   };
+
+  const uploadFile = async (req, res) => {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).send('No file uploaded.');
+    }
+  
+    const filePath = file.path;
+    const mimeType = file.mimetype;
+    const fileName = file.originalname;
+  
+    try {
+      const fileData = await uploadFileToDrive(filePath, mimeType, fileName);
+      
+      // Save file info to the database
+      const newFile = await File.create({
+        userId: req.user.id,
+        name: fileData.name,
+        googleId: fileData.id,
+        size: fileData.size,
+        webViewLink: fileData.webViewLink,
+        createdAt: fileData.createdTime,
+      });
+  
+      res.json(newFile);
+    } catch (error) {
+      console.error('Error uploading file to Google Drive:', error);
+      res.status(500).json({ error: 'Error uploading file to Google Drive.' });
+    }
+  };
+  
+  const getFiles = async (req, res) => {
+    try {
+      const files = await File.findAll({ where: { userId: req.user.id } });
+      res.json(files);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      res.status(500).json({ error: 'Error fetching files.' });
+    }
+  };
   
   module.exports = {
     getIndex,
     createUser,
-    loginUser
+    loginUser,
+    uploadFile,
+    getFiles
   };
