@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class FileService {
   private apiUrl = 'http://localhost:3000/api';
+  private token = localStorage.getItem('token');
 
   constructor(private http: HttpClient) { }
 
@@ -14,18 +15,16 @@ export class FileService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${this.token}`
     });
 
     return this.http.post(`${this.apiUrl}/upload`, formData, { headers });
   }
 
   getFiles(): Observable<any[]> {
-    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${this.token}`
     });
 
     return this.http.get<any[]>(`${this.apiUrl}/files`, { headers });
